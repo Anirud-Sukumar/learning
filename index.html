@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Number Guessing Game</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 0 auto;
+        max-width: 400px;
+        text-align: center;
+      }
+      button {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Guess the number!</h1>
+    <p>Guess a number between 1 and 100. You have 10 attempts!</p>
+
+    <input type="number" id="guessField" min="1" max="100" placeholder="Enter your guess" />
+    <button id="guessSubmit">Submit Guess</button>
+    <button id="restartButton" style="display: none;">Restart Game</button>
+
+    <p id="message"></p>
+    <p id="guesses"></p>
+
+    <script>
+      let randomNumber;
+      let guessCount;
+      const message = document.getElementById('message');
+      const guesses = document.getElementById('guesses');
+      const guessSubmit = document.getElementById('guessSubmit');
+      const restartButton = document.getElementById('restartButton');
+      const guessField = document.getElementById('guessField');
+
+      // Start the game
+      function startGame() {
+        randomNumber = Math.floor(Math.random() * 100) + 1; // Random number between 1 and 100
+        guessCount = 0; // Reset the guess count
+        guesses.textContent = ''; // Clear previous guesses
+        message.textContent = ''; // Clear message
+        guessSubmit.disabled = false; // Enable the guess submit button
+        restartButton.style.display = 'none'; // Hide the restart button initially
+        guessField.value = ''; // Clear the input field
+        guessField.focus(); // Focus the input field for next guess
+      }
+
+      // Function to check the user's guess
+      guessSubmit.addEventListener('click', function() {
+        const userGuess = parseInt(guessField.value);
+
+        if (isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
+          message.textContent = "Please enter a valid number between 1 and 100.";
+          return;
+        }
+
+        guessCount++;
+        guesses.textContent += ` ${userGuess}`;
+
+        // Check if the user guessed the number correctly
+        if (userGuess === randomNumber) {
+          message.textContent = `Correct! It took you ${guessCount} guesses!`;
+          guessSubmit.disabled = true;  // Disable the submit button
+          restartButton.style.display = 'block'; // Show the restart button
+        } else if (guessCount >= 10) {
+          message.textContent = "Game Over! You've used all 10 guesses.";
+          guessSubmit.disabled = true;
+          restartButton.style.display = 'block'; // Show the restart button
+        } else {
+          message.textContent = userGuess < randomNumber ? "Too low!" : "Too high!";
+        }
+
+        guessField.value = ''; // Clear input after each guess
+        guessField.focus(); // Keep the focus on the input field for the next guess
+      });
+
+      // Restart game when the restart button is clicked
+      restartButton.addEventListener('click', startGame);
+
+      // Initialize the game when the page loads
+      startGame();
+    </script>
+  </body>
+</html>
